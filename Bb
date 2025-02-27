@@ -1,0 +1,50 @@
+
+document.addEventListener('DOMContentLoaded', function () {
+    let FirstName = document.getElementById('customer_FirstName');
+    let LastName = document.getElementById('customer_LastName');
+    let email = document.getElementById('customer_email');
+    let address = document.getElementById('customer_address');
+    let phone = document.getElementById('customer_phoneNo');
+    let gender = document.getElementById('gender');
+    let city = document.getElementById('city');
+
+    function filter() {
+        let searchFname = FirstName.value.toLowerCase();
+        let searchLname = LastName.value.toLowerCase();
+        let searchEmail = email.value.toLowerCase();
+        let searchAddress = address.value.toLowerCase();
+        let searchPhone = phone.value;
+        let selectedGender = gender.value;
+        let selectedCity = city.value;
+        let rows = document.querySelectorAll("#customerTable tr");
+
+        rows.forEach(row => {
+            let customerFname = row.getAttribute("data-fname") || "";
+            let customerLname = row.getAttribute("data-lname") || "";
+            let customerEmail = row.getAttribute("data-email") || "";
+            let customerAddress = row.getAttribute("data-address") || "";
+            let customerGender = row.getAttribute("data-gender") || "";
+            let customerPhone = row.getAttribute("data-phone") || "";
+            let customerCity = row.getAttribute("data-city") || "";
+
+            let showRow = true;
+            if (searchFname && !customerFname.includes(searchFname)) showRow = false;
+            if (searchLname && !customerLname.includes(searchLname)) showRow = false;
+            if (searchEmail && !customerEmail.includes(searchEmail)) showRow = false;
+            if (searchAddress && !customerAddress.includes(searchAddress)) showRow = false;
+            if (searchPhone && !customerPhone.includes(searchPhone)) showRow = false;
+            if (selectedGender !== "Gender" && selectedGender !== customerGender) showRow = false;
+            if (selectedCity !== "--select city--" && selectedCity !== customerCity) showRow = false;
+
+            row.style.display = showRow ? "" : "none";
+        });
+    }
+
+    FirstName.addEventListener("input", filter);
+    LastName.addEventListener("input", filter);
+    email.addEventListener("input", filter);
+    address.addEventListener("input", filter);
+    phone.addEventListener("input", filter);
+    gender.addEventListener("change", filter);
+    city.addEventListener("change", filter);
+});
