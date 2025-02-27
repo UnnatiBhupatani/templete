@@ -1,0 +1,145 @@
+@extends('layout.master')
+@section('content')
+
+<h2>Customer details</h2><br>
+<input type="text" name="customer_FirstName" id="customer_FirstName" placeholder="customer FirstName ">
+<input type="text" name="customer_LastName" id="customer_LastName" placeholder="customer LastName ">
+<input type="email" name="customer_email"  id="customer_email" placeholder="customer email ">
+<input type="text" name="customer_address" id="customer_address" placeholder="customer address ">
+<input type="text" name="customer_phoneNo" id="customer_phoneNo" placeholder="customer Phone No ">
+
+<select name="gender" id="gender">
+    <option>Gender</option>
+    <option value="male">male</option>
+    <option value="female">female</option>
+</select>
+
+<select name="city" id="city">
+     <option>--select city--</option>
+    <option value="ahmedabad">ahmedabad</option>
+    <option  value="baroda">baroda</option>
+     <option  value="junagadh">junagadh</option>
+</select><br><br><br>
+
+
+<table class=" table ">
+    <thead>
+    <tr>
+        <th>Username</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Gender</th>
+        <th>Phone No</th>
+        <th>City</th>
+        <th>Address</th>
+
+        <th>action</th>
+    </tr>
+    </thead>
+    <tbody id="customerTable">
+    @foreach ($customer as $customers)
+        <tr data-customer-id="{{ $customers->customer_id }}" data-fname="{{  strtolower($customers->customer_FirstName) }}" data-lname=" {{ strtolower($customers->customer_LastName) }}" data-email="{{ strtolower($customers->customer_email) }}" data-address="{{ strtolower($customers->customer_address) }}" data-gender="{{ $customers->customer_gender }}" data-phone="{{ $customers->customer_phoneNo }}" data-city="{{ $customers->customer_city }}">
+            <td>{{ $customers->users->username }}</td>
+            <td>{{ $customers->customer_FirstName }} {{ $customers->customer_LastName }}</td>
+            <td>{{ $customers->customer_email }}</td>
+            <td>{{ $customers->customer_gender }}</td>
+            <td>{{ $customers->customer_phoneNo }}</td>
+            <td>{{ $customers->customer_city }}</td>
+            <td>{{ $customers->customer_address }}</td>
+
+            <td>
+                <a href="{{ url('/customer/edit/' . $customers->id) }}" class="btn btn-warning"><i class="fas fa-edit"></i></a>
+                <a href="{{ url('/customer/delete/' . $customers->id) }}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+            </td>
+        </tr>
+    @endforeach
+    </tbody>
+</table>
+
+<script>
+    document.addEventListener('DOMContentLoaded',function(){
+
+        let FirstName=document.getElementById('customer_FirstName');
+        let LastName=document.getElementById('customer_LastName');
+        let email=document.getElementById('customer_email');
+        let address=document.getElementById('customer_address');
+        let phone=document.getElementById('customer_phoneNo');
+        let gender=document.getElementById('gender');
+        let city=document.getElementById('city');
+
+        function filter(){
+            let searchFname=FirstName.value.toLowerCase();
+            let searchLname=LastName.value.toLowerCase();
+            let searchEmail=LastName.value.toLowerCase();
+            let searchAddress=address.value.toLowerCase();
+            let SearchPhone=phone.value;
+            let selectedGender=gender.value;
+            let selectedCity=city.value;
+            let rows = document.querySelectorAll("#customerTable tr");
+
+            rows.forEach(row=>{
+                let customerId=row.getAttribute("data-customer-id");
+                let customerFname=row.getAttribute("data-fname");
+                let customerLname=row.getAttribute("data-lname");
+                let customerEmail=row.getAttribute("data-email");
+                let customerAddress=row.getAttribute("data-address");
+                let customerGender=row.getAttribute("data-gender");
+                let customerPhone=row.getAttribute("data-phone");
+                let customerCity=row.getAttribute("data-city");
+
+                let showRow=true;
+                if(searchFname !== "" && customerFname !== searchFname)
+                 {
+                     showRow=false;
+                 }
+                 if(searchLname !== "" && customerLname !== searchLname)
+                 {
+                     showRow=false;
+                 }
+                 if(searchEmail !== "" && customerEmail !== searchEmail)
+                 {
+                     showRow=false;
+                 }
+                 if(searchAddress !== "" && customerAddress !== searchAddress)
+                 {
+                     showRow=false;
+                 }
+                 if(SearchPhone !== "" && customerPhone !== SearchPhone)
+                 {
+                     showRow=false;
+                 }
+                  if(selectedGender !== "" && customerGender !== selectedGender)
+                 {
+                     showRow=false;
+                 }
+                 if(selectedCity !== "" && customerCity !== selectedCity)
+                 {
+                     showRow=false;
+                 }
+                 row.style.display=showRow? "" :"none";
+
+
+
+            });
+        }
+        FirstName.addEventListener("input", filter);
+        LastName.addEventListener("input", filter);
+        email.addEventListener("input", filter);
+        address.addEventListener("input", filter );
+        phone.addEventListener("input", filter );
+        gender.addEventListener("change", filter );
+        city.addEventListener("change", filter );
+
+    })
+</script>
+
+
+
+<div class="pagination">
+    {{ $customer->links('pagination::bootstrap-5') }}
+
+</div>
+
+@stop
+
+
