@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Status Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<canvas id="statusChart"></canvas>
+
+<script>
+    // Laravel data passed as JSON
+    var statusCounts = @json($statusCounts);
+
+    // Extract labels (keys) and values (counts)
+    var labels = Object.keys(statusCounts);
+    var data = Object.values(statusCounts);
+
+    var ctx = document.getElementById('statusChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Contact Status Count',
+                data: data,
+                backgroundColor: ['#4CAF50', '#FFC107', '#FF5722'], // Colors for Done, Pending, Follow-up
+                borderColor: ['#388E3C', '#FFA000', '#D32F2F'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
