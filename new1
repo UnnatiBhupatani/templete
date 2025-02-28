@@ -1,0 +1,133 @@
+@extends('layout.master')
+@section('content')
+
+    <h4 style="margin-top:20px">Username: {{ $user->username }}</h4>
+    <h3>Customer Data</h3>
+
+    <div class="container">
+        <div class="row">
+            @foreach ($assign as $assigns)
+                @foreach ($assigns->customers as $customers)
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+
+                                <h5 class="card-title">{{ $customers->customer_FirstName }}
+                                    {{ $customers->customer_LastName }}
+                                </h5>
+                                <h6 class="card-subtitle mb-2 text-muted"> Email: {{ $customers->customer_email }}</h6>
+                                <p class="card-text">Gender: {{ $customers->customer_gender }}</p>
+                                <p class="card-text">Phone No: {{ $customers->customer_phoneNo }}</p>
+                                <p class="card-text">City: {{ $customers->customer_city }}</p>
+                                <p class="card-text">Address: {{ $customers->customer_address }}</p>
+
+                                {{-- <a href="{{ url('/customer/edit/' . $customers->id) }}" class="btn btn-warning">Edit</a>
+                                <a href="{{ url('/customer/delete/' . $customers->id) }}" class="btn btn-danger">Delete</a> --}}
+                                <a href="{{ url('/customer/display/edit/' . $customers->id) }}"
+                                    class="btn  btn-secondary text-light card-link" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal" data-id="{{ $customers->id }}">Contact</a>
+
+                                <div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Contact Details</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+
+                                                <form id=" form1"method="get"
+                                                    action="{{ isset($name) ? url('customer/display/add/' . $name->id) : '' }}">
+                                                    {{-- <h3>Contact Details</h3><br> --}}
+
+                                                    <input type="hidden" name="customer_id"
+                                                        value="{{ old('customer_id', isset($name) ? $name->id : '') }}">
+
+                                                    Customer First Name:<input type="text" name="customer_FirstName"
+                                                        class="form-control"
+                                                        value="{{ old('customer_FirstName', isset($name) ? $name->customer_FirstName : '') }}"><br>
+
+                                                    Customer Last Name:<input type="text" name="customer_LastName"
+                                                        class="form-control"
+                                                        value="{{ old('customer_LastName', isset($name) ? $name->customer_LastName : '') }}"><br>
+
+                                                    Date:<input type="date" name="date" class="form-control"
+                                                        value={{ old('date', isset($editContact) ? $editContact->contact_date : '') }}><br>
+                                                    description:
+                                                    <textarea name="description" class="form-control">{{ old('description', isset($editContact) ? $editContact->description : '') }}</textarea><br>
+
+
+                                                    Status: <select name='customer_status' class="form-control">
+                                                        <option>--select status--</option>
+                                                        <option value="pending"
+                                                            {{ old('status', $editContact->status ?? '') == 'pending' ? 'selected' : '' }}>
+                                                            pending</option>
+                                                        <option value="followup"
+                                                            {{ old('status', $editContact->status ?? '') == 'followup' ? 'selected' : '' }}>
+                                                            followup</option>
+                                                        <option value="done"
+                                                            {{ old('status', $editContact->status ?? '') == 'done' ? 'selected' : '' }}>
+                                                            done</option>
+                                                    </select><span style="color:red;">
+                                                        @error('customer_status')
+                                                            {{ $message }}
+                                                        @enderror
+                                                    </span><br>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                                <button class="btn btn-success">Submit</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @endforeach
+        </div>
+    </div>
+    <br>
+    {{-- <div style="height: 45%; width: 40%; border: solid 1px rgb(182, 179, 179); padding:30px; margin-left:30%;  ">
+ <form  id=" form1"method="get" action="{{ isset($name) ? url('customer/display/add/' . $name->id) : '' }}">
+            <h3>Contact Details</h3><br>
+
+            <input type="hidden" name="customer_id" value="{{ old('customer_id', isset($name) ? $name->id : '') }}">
+
+            Customer First Name:<input type="text" name="customer_FirstName" class="form-control"
+                value="{{ old('customer_FirstName', isset($name) ? $name->customer_FirstName : '') }}"><br>
+
+            Customer Last Name:<input type="text" name="customer_LastName" class="form-control"
+                value="{{ old('customer_LastName', isset($name) ? $name->customer_LastName : '') }}"><br>
+
+            Date:<input type="date" name="date" class="form-control"
+                value={{ old('date', isset($editContact) ? $editContact->contact_date : '') }}><br>
+            description:
+            <textarea name="description" class="form-control">{{ old('description', isset($editContact) ? $editContact->description : '') }}</textarea><br>
+
+
+            Status: <select name='customer_status' class="form-control">
+                <option>--select status--</option>
+                <option value="pending" {{ old('status', $editContact->status ?? '') == 'pending' ? 'selected' : '' }}>
+                    pending</option>
+                <option value="followup" {{ old('status', $editContact->status ?? '') == 'followup' ? 'selected' : '' }}>
+                    followup</option>
+                <option value="done" {{ old('status', $editContact->status ?? '') == 'done' ? 'selected' : '' }}>
+                    done</option>
+            </select><span style="color:red;">
+                @error('customer_status')
+                    {{ $message }}
+                @enderror
+            </span><br>
+    <button class="btn btn-success">Submit</button>
+        </form>
+  </div> --}}
+<script>
+    
+</script>
+@stop
