@@ -1,0 +1,109 @@
+@extends('layout.master')
+@section('content')
+
+<h4 style="margin-top:20px">Username: {{ $user->username }}</h4>
+<h3>Customer Data</h3>
+
+<div class="container">
+    <div class="row">
+        @foreach ($assign as $assigns)
+            @foreach ($assigns->customers as $customers)
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $customers->customer_FirstName }} {{ $customers->customer_LastName }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Email: {{ $customers->customer_email }}</h6>
+                            <p class="card-text">Gender: {{ $customers->customer_gender }}</p>
+                            <p class="card-text">Phone No: {{ $customers->customer_phoneNo }}</p>
+                            <p class="card-text">City: {{ $customers->customer_city }}</p>
+                            <p class="card-text">Address: {{ $customers->customer_address }}</p>
+
+                            <a href="#" class="btn btn-secondary text-light card-link contact-btn"
+                               data-bs-toggle="modal" data-bs-target="#exampleModal"
+                               data-id="{{ $customers->id }}"
+                               data-firstname="{{ $customers->customer_FirstName }}"
+                               data-lastname="{{ $customers->customer_LastName }}"
+                               data-date="{{ old('date', isset($editContact) ? $editContact->contact_date : '') }}"
+                               data-description="{{ old('description', isset($editContact) ? $editContact->description : '') }}"
+                               data-status="{{ old('status', $editContact->status ?? '') }}">
+                               Contact
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        @endforeach
+    </div>
+</div>
+
+<!-- Single Modal (Dynamically Filled with JavaScript) -->
+<div class="modal fade" id="exampleModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Contact Details</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="contactForm" method="get" action="">
+                    <input type="hidden" name="customer_id" id="modalCustomerId">
+
+                    <label>Customer First Name:</label>
+                    <input type="text" name="customer_FirstName" id="modalCustomerFirstName" class="form-control"><br>
+
+                    <label>Customer Last Name:</label>
+                    <input type="text" name="customer_LastName" id="modalCustomerLastName" class="form-control"><br>
+
+                    <label>Date:</label>
+                    <input type="date" name="date" id="modalCustomerDate" class="form-control"><br>
+
+                    <label>Description:</label>
+                    <textarea name="description" id="modalCustomerDescription" class="form-control"></textarea><br>
+
+                    <label>Status:</label>
+                    <select name='customer_status' id="modalCustomerStatus" class="form-control">
+                        <option>--select status--</option>
+                        <option value="pending">Pending</option>
+                        <option value="followup">Follow-up</option>
+                        <option value="done">Done</option>
+                    </select>
+                    <span style="color:red;">
+                        @error('customer_status') {{ $message }} @enderror
+                    </span><br>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-success" id="submitForm">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript to Populate Modal Fields -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".contact-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            document.getElementById("modalCustomerId").value = this.getAttribute("data-id");
+            document.getElementById("modalCustomerFirstName").value = this.getAttribute("data-firstname");
+            document.getElementById("modalCustomerLastName").value = this.getAttribute("data-lastname");
+            document.getElementById("modalCustomerDate").value = this.getAttribute("data-date");
+            document.getElementById("modalCustomerDescription").value = this.getAttribute("data-description");
+
+            let status = this.getAttribute("data-status");
+            document.getElementById("modalCustomerStatus").value = status || "--select status--";
+
+            // Update the form action dynamically
+            document.getElementById("contactForm").action = `/customer/display/add/${this.getAttribute("data-id")}`;
+        });
+    });
+
+    // Submit button to send form
+    document.getElementById("submitForm").addEventListener("click", function() {
+        document.getElementById("contactForm").submit();
+    });
+});
+</script>
+
+@stop
