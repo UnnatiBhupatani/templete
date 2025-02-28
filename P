@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Status Pie Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<canvas id="statusPieChart"></canvas>
+
+<script>
+    // Laravel data passed as JSON
+    var statusCounts = @json($statusCounts);
+
+    // Extract labels (keys) and values (counts)
+    var labels = Object.keys(statusCounts);
+    var data = Object.values(statusCounts);
+
+    var ctx = document.getElementById('statusPieChart').getContext('2d');
+    var myPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Contact Status Count',
+                data: data,
+                backgroundColor: ['#4CAF50', '#FFC107', '#FF5722'], // Colors for Done, Pending, Follow-up
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+</script>
+
+</body>
+</html>
